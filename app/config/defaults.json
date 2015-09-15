@@ -16,7 +16,8 @@
     "theme": "ace/theme/atom_dark"
   },
   "exampleFiles": [
-    "default.yaml",
+    "houzz.yaml",
+    "uber.yaml",
     "heroku-pets.yaml",
     "minimal.yaml",
     "echo.yaml",

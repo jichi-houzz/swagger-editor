@@ -1,0 +1,283 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+# Example: https://www.houzztest.com/api?format=xml&version=140&siteId=101&app=test1&user=&token=&appAgent=iPhone5,2~iOS%25208.2~com.houzz.app~Build%25201477&method=getDigest&thumbSize1=2&getGalleryTopic=yes
+swagger: '2.0'
+info:
+  title: Houzz API
+  description: Houzz
+  #version: '1.0.0'
+  version: '1442342475'
+# the domain of the service
+host: www.houzztest.com
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+#basePath: /v1
+produces:
+  - application/xml
+  #- application/json
+paths:
+  /api?method=getDigest:
+    post:
+      x-minimumVersion: 1442338057
+      summary: Digest of galleries and questions.
+      description: Get a summary recent updates from Houzz (currently for mobile devices).
+      parameters:
+        - name: thumbSize1
+          in: query
+          description: Thumbnail size ID for images in galleries or questions.
+          type: number
+          format: integer
+        - name: getGallery
+          in: query
+          description: Whether retrieve galleries.
+          type: boolean
+        - name: getGalleryTopic
+          in: query
+          description: Whether retrieve gallery topics with the first gallery of each topic.
+          type: boolean
+        - name: getQuestion
+          in: query
+          description: Whether retrieve questions.
+          type: boolean
+        - name: getQuestionTopic
+          in: query
+          description: Whether retrieve question topics with the first question of each topic.
+          type: boolean
+        - name: galleryTopicIds
+          in: query
+          description: |
+            The gallery topics to get when getGalleryTopic is yes.
+            The value is a list of topic IDs separated by comma, such as "12,34,56".
+          type: string
+        - name: questionTopicIds
+          in: query
+          description: |
+            The question topics to get when getQuestionTopic is yes.
+            The value is a list of topic IDs separated by comma, such as "12,34,56".
+          type: string
+        - name: galleryStart
+          in: query
+          description: Pagination for galleries when getGallery is yes.
+          type: number
+          format: integer
+        - name: galleryNumberOfItem
+          in: query
+          description: Pagination for galleries when getGallery is yes.
+          type: number
+          format: integer
+        - name: questionStart
+          in: query
+          description: Pagination for questions when getQuestion is yes.
+          type: number
+          format: integer
+        - name: questionNumberOfItem
+          in: query
+          description: Pagination for questions when getQuestion is yes.
+          type: number
+          format: integer
+      tags:
+        - Galleries
+        - Questions
+      responses:
+        200:
+          description: Galleries and questions.
+          schema:
+            type: object
+            properties:
+              TotalGalleryCount:
+                type: number
+                description: Total number of matched galleries. Only when getGallery is yes.
+              Galleries:
+                type: array
+                items:
+                  $ref: '#/definitions/Gallery'
+                description: List of galleries. Only when getGallery is yes.
+              TotalQuestionCount:
+                type: number
+                description: Total number of matched questions. Only when getQuestion is yes.
+              Questions:
+                type: array
+                items:
+                  $ref: '#/definitions/Question'
+                description: List of questions. Only when getQuestion is yes.
+              GalleryTopics:
+                type: array
+                items:
+                  $ref: '#/definitions/BasicTopic'
+                description: List of gallery topics. Only when getGalleryTopic is yes.
+              TopicGalleries:
+                type: array
+                items:
+                  $ref: '#/definitions/Gallery'
+                description: List of first galleries for topics. Only when getGalleryTopic is yes.
+              QuestionTopics:
+                type: array
+                items:
+                  $ref: '#/definitions/BasicTopic'
+                description: List of question topics. Only when getQuestionTopic is yes.
+              TopicQuestions:
+                type: array
+                items:
+                  $ref: '#/definitions/Question'
+                description: List of first questions for topics. Only when getQuestionTopic is yes.
+        default:
+          description: Unexpected error
+definitions:
+  Image:
+    properties:
+      ThumbUrl1:
+        type: string
+        format: URL
+        description: Thumbnail image URL.
+      ThumbWidth1:
+        type: number
+        format: integer
+        description: Thumbnail image width.
+      ThumbHeight1:
+        type: number
+        format: integer
+        description: Thumbnail image height.
+      OptionalThumbSizes:
+        type: array
+        description: Thumbnail image optional size IDs.
+        items:
+          properties:
+            ThumbSizeId:
+              type: number
+              format: integer
+              description: Thumbnail size ID.
+  BasicTopic:
+    x-minimumVersion: 1440000066
+    properties:
+      Id:
+        type: number
+        format: integer
+        description:  Topic ID.
+      Name:
+        type: string
+        description: Topic title.
+  Gallery:
+    properties:
+      Id:
+        type: number
+        format: integer
+        description: Gallery ID, such as 12345.
+      Title:
+        type: string
+        description: Gallery title, such as "Houzz Tour".
+      Subtitle:
+        type: string
+        description: Gallery subtitle.
+      Description:
+        type: string
+        description: Gallery subtitle.
+      IsPrivate:
+        type: boolean
+        description: Whether the gallery is only visible to its creator.
+      CreateBy:
+        type: string
+        description: Creation user's profile name.
+      CreateByName:
+        type: string
+        description: Creation user's full name.
+      CreateByImage:
+        type: string
+        format: URL
+        description: Creation user's avatar image URL.
+      Modified:
+        type: string
+        format: date-time
+        description: Modification date and time, such as "2014-03-10T04:03:40.00Z".
+      ModifiedAsString:
+        type: string
+        description: Modification date, such as "March 9, 2014".
+      Featured:
+        type: string
+        format: date-time
+        description: Date and time when the gallery get featured.
+      SpaceCount:
+        type: number
+        format: integer
+        description: Total number of spaces in the gallery.
+      CommentCount:
+        type: number
+        format: integer
+        description: Total number of comments received.
+      Likes:
+        type: number
+        format: integer
+        description: Total number of likes received.
+      ThemeType:
+        type: string
+        enum:
+          - regular
+        description: Gallery theme.
+      SpaceImages:
+        type: array
+        items:
+           $ref: '#/definitions/Image'
+  QuestionStatus:
+    type: string
+    enum:
+      - open
+      - resolved
+      - locked
+      - buried
+      - deleted
+    description: Gallery theme.
+  Question:
+    properties:
+      QuestionId:
+        type: number
+        format: integer
+        description: Question ID, such as 12345.
+      Status:
+         $ref: '#/definitions/QuestionStatus'
+      Title:
+        type: string
+        description: Question title.
+      Body:
+        type: string
+        description: Question content.
+      Topic:
+        type: number
+        format: integer
+        description: Topic ID.
+      Likes:
+        type: number
+        format: integer
+        description: Total number of likes received.
+      CreatedDate:
+        type: string
+        format: date-time
+        description: Creation date and time, such as "2014-03-10T04:03:40.00Z".
+      CreateBy:
+        type: string
+        description: Creation user's profile name.
+      CreateByName:
+        type: string
+        description: Creation user's full name.
+      CreateByImage:
+        type: string
+        format: URL
+        description: Creation user's avatar image URL.
+      IsPool:
+        type: boolean
+        description: If the question is a poll.
+      TotalVoteCount:
+        type: number
+        format: integer
+        description: Total number of votes received if it is a poll.
+      ReplyCount:
+        type: number
+        format: integer
+        description: Total number of answers received.
+      HasImage:
+        type: boolean
+        description: If it contains image.
+      FileImages:
+        type: array
+        items:
+           $ref: '#/definitions/Image'

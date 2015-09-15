@@ -1,5 +1,20 @@
 'use strict';
 
+var scanVersions = function(obj, versions) {
+  // object, [string] ->
+  console.dir(obj);
+  for (var key in obj) {
+    var val = obj[key];
+    if (key === 'x-version' || key === 'x-minimumVersion' || key === 'x-maximumVersion') {
+      val = String(val);
+      if (versions.indexOf(val) === -1)
+        versions.push(val);
+    } else if (val instanceof Object) {
+      scanVersions(val, versions);
+    }
+  }
+};
+
 SwaggerEditor.controller('PreviewCtrl', function PreviewCtrl(Storage, Builder,
   ASTManager, Editor, FocusedPath, TagManager, Preferences, FoldStateManager,
   $scope, $rootScope, $stateParams, $sessionStorage) {
@@ -58,6 +73,13 @@ SwaggerEditor.controller('PreviewCtrl', function PreviewCtrl(Storage, Builder,
     if (result.specs) {
       TagManager.registerTagsFromSpec(result.specs);
       $rootScope.specs = result.specs;
+
+      if (result.specs.info && !result.specs.info.versions) {
+        var versions = result.specs.info.versions = [];
+        if (result.specs.info.version)
+          versions.push(result.specs.info.version);
+        scanVersions(result.specs, versions);
+      }
     }
     $rootScope.errors = result.errors || [];
     $rootScope.warnings = result.warnings || [];

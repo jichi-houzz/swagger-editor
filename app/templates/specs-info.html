@@ -10,7 +10,14 @@
 
   <div class="info-container section-content" collapse-when="specs.info.$folded">
     <div marked="specs.info.description"></div>
-    <h4>Version <span>{{specs.info.version}}</span></h4>
+    <h4>Latest Version <span>{{specs.info.version}}</span></h4>
+    <div ng-if="specs.info.versions && specs.info.versions.length > 1">
+      <h4>All Versions&nbsp;
+        <select>
+          <option ng-repeat="it in specs.info.versions" value="{{it}}">{{it}}</option>
+        </select>
+      </h4>
+    </div>
     <div class="contact info-box" ng-if="specs.info.contact">
       <h4>Contact information</h4>
       <p ng-if="specs.info.contact.name">{{specs.info.contact.name}}</p>
