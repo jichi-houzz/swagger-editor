@@ -1,12 +1,11 @@
-# this is an example of the Uber API
-# as a demonstration of an API spec in YAML
+# This is an example of the manually-written Houzz API
 # Example: https://www.houzztest.com/api?format=xml&version=140&siteId=101&app=test1&user=&token=&appAgent=iPhone5,2~iOS%25208.2~com.houzz.app~Build%25201477&method=getDigest&thumbSize1=2&getGalleryTopic=yes
 swagger: '2.0'
 info:
   title: Houzz API
   description: Houzz
   #version: '1.0.0'
-  version: '1442342475'
+  version: '54'
 # the domain of the service
 host: www.houzztest.com
 # array of all schemes that your API supports
@@ -20,108 +19,63 @@ produces:
 paths:
   /api?method=getDigest:
     post:
-      x-minimumVersion: 1442338057
-      summary: Digest of galleries and questions.
+      x-minimumVersion: 53
+      summary: Digest of latest galleries, questions, and their cover topics.
       description: Get a summary recent updates from Houzz (currently for mobile devices).
       parameters:
+        - name: level
+          in: query
+          description: |
+            A bit mask to select what to get.
+            * 1: Get cover topics for galleries.
+            * 2: Get latest galleries.
+            * 4: Get cover topics for questions.
+            * 8: Get latest questions.
+          type: number
+          format: integer
         - name: thumbSize1
           in: query
           description: Thumbnail size ID for images in galleries or questions.
           type: number
           format: integer
-        - name: getGallery
+        - name: numberOfGalleries
           in: query
-          description: Whether retrieve galleries.
-          type: boolean
-        - name: getGalleryTopic
-          in: query
-          description: Whether retrieve gallery topics with the first gallery of each topic.
-          type: boolean
-        - name: getQuestion
-          in: query
-          description: Whether retrieve questions.
-          type: boolean
-        - name: getQuestionTopic
-          in: query
-          description: Whether retrieve question topics with the first question of each topic.
-          type: boolean
-        - name: galleryTopicIds
-          in: query
-          description: |
-            The gallery topics to get when getGalleryTopic is yes.
-            The value is a list of topic IDs separated by comma, such as "12,34,56".
-          type: string
-        - name: questionTopicIds
-          in: query
-          description: |
-            The question topics to get when getQuestionTopic is yes.
-            The value is a list of topic IDs separated by comma, such as "12,34,56".
-          type: string
-        - name: galleryStart
-          in: query
-          description: Pagination for galleries when getGallery is yes.
+          description: Maximum number of galleries to get. Only when the level parameter contains the Gallery bit.
           type: number
           format: integer
-        - name: galleryNumberOfItem
+        - name: numberOfQuestions
           in: query
-          description: Pagination for galleries when getGallery is yes.
-          type: number
-          format: integer
-        - name: questionStart
-          in: query
-          description: Pagination for questions when getQuestion is yes.
-          type: number
-          format: integer
-        - name: questionNumberOfItem
-          in: query
-          description: Pagination for questions when getQuestion is yes.
+          description: Maximum number of questions to get. Only when the level parameter contains the Question bit.
           type: number
           format: integer
       tags:
-        - Galleries
-        - Questions
+        - CoverTopics
       responses:
         200:
           description: Galleries and questions.
           schema:
             type: object
             properties:
-              TotalGalleryCount:
-                type: number
-                description: Total number of matched galleries. Only when getGallery is yes.
               Galleries:
                 type: array
                 items:
                   $ref: '#/definitions/Gallery'
-                description: List of galleries. Only when getGallery is yes.
-              TotalQuestionCount:
-                type: number
-                description: Total number of matched questions. Only when getQuestion is yes.
+                description: List of galleries. Only when the level parameter contains the Gallery bit.
               Questions:
                 type: array
                 items:
                   $ref: '#/definitions/Question'
-                description: List of questions. Only when getQuestion is yes.
-              GalleryTopics:
+                description: List of questions. Only when the level parameter contains the Question bit.
+              GalleryCoverTopics:
                 type: array
                 items:
-                  $ref: '#/definitions/BasicTopic'
-                description: List of gallery topics. Only when getGalleryTopic is yes.
-              TopicGalleries:
+                  $ref: '#/definitions/CoverTopic'
+                description: List of cover topics for galleries. Only when the level parameter contains the GalleryCoverTopic bit.
+              QuestionCoverTopics:
                 type: array
                 items:
-                  $ref: '#/definitions/Gallery'
-                description: List of first galleries for topics. Only when getGalleryTopic is yes.
-              QuestionTopics:
-                type: array
-                items:
-                  $ref: '#/definitions/BasicTopic'
-                description: List of question topics. Only when getQuestionTopic is yes.
-              TopicQuestions:
-                type: array
-                items:
-                  $ref: '#/definitions/Question'
-                description: List of first questions for topics. Only when getQuestionTopic is yes.
+                  $ref: '#/definitions/CoverTopic'
+                description: List of cover topics for questions. Only when the level parameter contains the QuestionCoverTopic bit.
         default:
           description: Unexpected error
 definitions:
@@ -148,8 +102,8 @@ definitions:
               type: number
               format: integer
               description: Thumbnail size ID.
-  BasicTopic:
-    x-minimumVersion: 1440000066
+  CoverTopic:
+    x-minimumVersion: 79
     properties:
       Id:
         type: number
@@ -158,6 +112,10 @@ definitions:
       Name:
         type: string
         description: Topic title.
+      CoverImages:
+        type: array
+        items:
+           $ref: '#/definitions/Image'
   Gallery:
     properties:
       Id:
