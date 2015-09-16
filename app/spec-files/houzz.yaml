@@ -20,12 +20,17 @@ paths:
   /api?method=getDigest:
     post:
       x-minimumVersion: 53
-      summary: Digest of galleries and questions.
+      summary: Digest of latest galleries, questions, and their cover topics.
       description: Get a summary recent updates from Houzz (currently for mobile devices).
       parameters:
         - name: level
           in: query
-          description: A bit mask to select what to display.
+          description: |
+            A bit mask to select what to get.
+            * 1: Get cover topics for galleries.
+            * 2: Get latest galleries.
+            * 4: Get cover topics for questions.
+            * 8: Get latest questions.
           type: number
           format: integer
         - name: thumbSize1
@@ -51,42 +56,26 @@ paths:
           schema:
             type: object
             properties:
-              TotalGalleryCount:
-                type: number
-                description: Total number of matched galleries. Only when getGallery is yes.
               Galleries:
                 type: array
                 items:
                   $ref: '#/definitions/Gallery'
-                description: List of galleries. Only when getGallery is yes.
-              TotalQuestionCount:
-                type: number
-                description: Total number of matched questions. Only when getQuestion is yes.
+                description: List of galleries. Only when the level parameter contains the Gallery bit.
               Questions:
                 type: array
                 items:
                   $ref: '#/definitions/Question'
-                description: List of questions. Only when getQuestion is yes.
-              GalleryTopics:
+                description: List of questions. Only when the level parameter contains the Question bit.
+              GalleryCoverTopics:
                 type: array
                 items:
-                  $ref: '#/definitions/BasicTopic'
-                description: List of gallery topics. Only when getGalleryTopic is yes.
-              TopicGalleries:
+                  $ref: '#/definitions/CoverTopic'
+                description: List of cover topics for galleries. Only when the level parameter contains the GalleryCoverTopic bit.
+              QuestionCoverTopics:
                 type: array
                 items:
-                  $ref: '#/definitions/Gallery'
-                description: List of first galleries for topics. Only when getGalleryTopic is yes.
-              QuestionTopics:
-                type: array
-                items:
-                  $ref: '#/definitions/BasicTopic'
-                description: List of question topics. Only when getQuestionTopic is yes.
-              TopicQuestions:
-                type: array
-                items:
-                  $ref: '#/definitions/Question'
-                description: List of first questions for topics. Only when getQuestionTopic is yes.
+                  $ref: '#/definitions/CoverTopic'
+                description: List of cover topics for questions. Only when the level parameter contains the QuestionCoverTopic bit.
         default:
           description: Unexpected error
 definitions:
@@ -113,7 +102,7 @@ definitions:
               type: number
               format: integer
               description: Thumbnail size ID.
-  BasicTopic:
+  CoverTopic:
     x-minimumVersion: 79
     properties:
       Id:
