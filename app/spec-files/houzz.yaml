@@ -40,12 +40,12 @@ paths:
           format: integer
         - name: numberOfGalleries
           in: query
-          description: Total number of returned galleries.
+          description: Maximum number of galleries to get. Only when the level parameter contains the Gallery bit.
           type: number
           format: integer
         - name: numberOfQuestions
           in: query
-          description: Total number of returned questions.
+          description: Maximum number of questions to get. Only when the level parameter contains the Question bit.
           type: number
           format: integer
       tags:
