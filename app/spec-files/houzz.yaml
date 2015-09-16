@@ -1,12 +1,11 @@
-# this is an example of the Uber API
-# as a demonstration of an API spec in YAML
+# This is an example of the manually-written Houzz API
 # Example: https://www.houzztest.com/api?format=xml&version=140&siteId=101&app=test1&user=&token=&appAgent=iPhone5,2~iOS%25208.2~com.houzz.app~Build%25201477&method=getDigest&thumbSize1=2&getGalleryTopic=yes
 swagger: '2.0'
 info:
   title: Houzz API
   description: Houzz
   #version: '1.0.0'
-  version: '1442342475'
+  version: '54'
 # the domain of the service
 host: www.houzztest.com
 # array of all schemes that your API supports
@@ -20,66 +19,32 @@ produces:
 paths:
   /api?method=getDigest:
     post:
-      x-minimumVersion: 1442338057
+      x-minimumVersion: 53
       summary: Digest of galleries and questions.
       description: Get a summary recent updates from Houzz (currently for mobile devices).
       parameters:
+        - name: level
+          in: query
+          description: A bit mask to select what to display.
+          type: number
+          format: integer
         - name: thumbSize1
           in: query
           description: Thumbnail size ID for images in galleries or questions.
           type: number
           format: integer
-        - name: getGallery
+        - name: numberOfGalleries
           in: query
-          description: Whether retrieve galleries.
-          type: boolean
-        - name: getGalleryTopic
-          in: query
-          description: Whether retrieve gallery topics with the first gallery of each topic.
-          type: boolean
-        - name: getQuestion
-          in: query
-          description: Whether retrieve questions.
-          type: boolean
-        - name: getQuestionTopic
-          in: query
-          description: Whether retrieve question topics with the first question of each topic.
-          type: boolean
-        - name: galleryTopicIds
-          in: query
-          description: |
-            The gallery topics to get when getGalleryTopic is yes.
-            The value is a list of topic IDs separated by comma, such as "12,34,56".
-          type: string
-        - name: questionTopicIds
-          in: query
-          description: |
-            The question topics to get when getQuestionTopic is yes.
-            The value is a list of topic IDs separated by comma, such as "12,34,56".
-          type: string
-        - name: galleryStart
-          in: query
-          description: Pagination for galleries when getGallery is yes.
+          description: Total number of returned galleries.
           type: number
           format: integer
-        - name: galleryNumberOfItem
+        - name: numberOfQuestions
           in: query
-          description: Pagination for galleries when getGallery is yes.
-          type: number
-          format: integer
-        - name: questionStart
-          in: query
-          description: Pagination for questions when getQuestion is yes.
-          type: number
-          format: integer
-        - name: questionNumberOfItem
-          in: query
-          description: Pagination for questions when getQuestion is yes.
+          description: Total number of returned questions.
           type: number
           format: integer
       tags:
-        - Galleries
-        - Questions
+        - CoverTopics
       responses:
         200:
           description: Galleries and questions.
@@ -149,7 +114,7 @@ definitions:
               format: integer
               description: Thumbnail size ID.
   BasicTopic:
-    x-minimumVersion: 1440000066
+    x-minimumVersion: 79
     properties:
       Id:
         type: number

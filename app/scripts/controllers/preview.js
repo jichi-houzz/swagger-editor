@@ -2,7 +2,7 @@
 
 var scanVersions = function(obj, versions) {
   // object, [string] ->
-  console.dir(obj);
+  //console.dir(obj);
   for (var key in obj) {
     var val = obj[key];
     if (key === 'x-version' || key === 'x-minimumVersion' || key === 'x-maximumVersion') {
