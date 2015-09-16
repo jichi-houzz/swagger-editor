@@ -66,7 +66,7 @@ var defaults = {
    * example is a combination of `examplesFolder` and file name
   */
   exampleFiles: [
-    'default.yaml',
+    'houzz.yaml',
     'heroku-pets.yaml',
     'minimal.yaml',
     'petstore_simple.yaml',
