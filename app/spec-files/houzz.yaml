@@ -1,5 +1,5 @@
 # This is an example of the manually-written Houzz API
-# Example: https://www.houzztest.com/api?format=xml&version=140&siteId=101&app=test1&user=&token=&appAgent=iPhone5,2~iOS%25208.2~com.houzz.app~Build%25201477&method=getDigest&thumbSize1=2&getGalleryTopic=yes
+# Example: https://www.houzztest.com/api?format=xml&version=140&siteId=101&app=test1&user=&token=&appAgent=iPhone5,2~iOS%25208.2~com.houzz.app~Build%25201477&method=getLatestUpdate&thumbSize1=2&detailLevel=1
 swagger: '2.0'
 info:
   title: Houzz API
@@ -14,16 +14,16 @@ schemes:
 # will be prefixed to all paths
 #basePath: /v1
 produces:
+  - application/json
   - application/xml
-  #- application/json
 paths:
-  /api?method=getDigest:
+  /api?method=getLatestUpdate:
     post:
       x-minimumVersion: 53
-      summary: Digest of latest galleries, questions, and their cover topics.
+      summary: Get the latest galleries, questions, and their cover topics.
       description: Get a summary recent updates from Houzz (currently for mobile devices).
       parameters:
-        - name: level
+        - name: detailLevel
           in: query
           description: |
             A bit mask to select what to get.
@@ -38,12 +38,22 @@ paths:
           description: Thumbnail size ID for images in galleries or questions.
           type: number
           format: integer
-        - name: numberOfGalleries
+        - name: maxItems1
+          in: query
+          description: Maximum number of topics to get. Only when the level parameter contains the Gallery Topic bit.
+          type: number
+          format: integer
+        - name: maxItems2
           in: query
           description: Maximum number of galleries to get. Only when the level parameter contains the Gallery bit.
           type: number
           format: integer
-        - name: numberOfQuestions
+        - name: maxItems3
+          in: query
+          description: Maximum number of topics to get. Only when the level parameter contains the Question Topic bit.
+          type: number
+          format: integer
+        - name: maxItems4
           in: query
           description: Maximum number of questions to get. Only when the level parameter contains the Question bit.
           type: number
@@ -112,10 +122,8 @@ definitions:
       Name:
         type: string
         description: Topic title.
-      CoverImages:
-        type: array
-        items:
-           $ref: '#/definitions/Image'
+      CoverImage:
+         $ref: '#/definitions/Image'
   Gallery:
     properties:
       Id:
