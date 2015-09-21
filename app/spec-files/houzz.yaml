@@ -38,22 +38,12 @@ paths:
           description: Thumbnail size ID for images in galleries or questions.
           type: number
           format: integer
-        - name: maxItems1
-          in: query
-          description: Maximum number of topics to get. Only when the level parameter contains the Gallery Topic bit.
-          type: number
-          format: integer
-        - name: maxItems2
+        - name: maxGalleries
           in: query
           description: Maximum number of galleries to get. Only when the level parameter contains the Gallery bit.
           type: number
           format: integer
-        - name: maxItems3
-          in: query
-          description: Maximum number of topics to get. Only when the level parameter contains the Question Topic bit.
-          type: number
-          format: integer
-        - name: maxItems4
+        - name: maxQuestions
           in: query
           description: Maximum number of questions to get. Only when the level parameter contains the Question bit.
           type: number
